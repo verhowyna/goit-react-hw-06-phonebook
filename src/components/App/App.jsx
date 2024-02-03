@@ -20,9 +20,7 @@ export const App = () => {
 
   const dispatch = useDispatch();
   const contacts = useSelector(store => store.contacts.contacts);
-  console.log('contacts: ', contacts);
   const filter = useSelector(store => store.contacts.filter);
-  console.log('filter: ', filter);
 
   // const [filter, setFilter] = useState('');
 
@@ -31,13 +29,13 @@ export const App = () => {
   }, [contacts]);
 
   const addContact = newContact => {
-    const isExist = contacts.some(
+    const hasDuplicates = contacts.some(
       ({ name, number }) =>
         name.toLowerCase().trim() === newContact.name.toLowerCase().trim() ||
         number.trim() === newContact.number.trim()
     );
 
-    if (isExist) {
+    if (hasDuplicates) {
       return toast.error(`${newContact.name}: is already in contacts`);
     }
 
@@ -47,10 +45,10 @@ export const App = () => {
     };
     dispatch(action);
   };
-  const handleDelete = id => {
+  const handleDelete = contactId => {
     const action = {
       type: 'contacts/deleteContacts',
-      payload: id,
+      payload: contactId,
     };
     dispatch(action);
   };
