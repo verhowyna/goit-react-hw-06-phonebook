@@ -1,3 +1,4 @@
+import { nanoid } from '@reduxjs/toolkit';
 import css from './Contacts.module.css';
 
 export const Contacts = ({ contactsList, onDelete }) => {
@@ -5,7 +6,7 @@ export const Contacts = ({ contactsList, onDelete }) => {
     <ul>
       {contactsList.map(contact => {
         return (
-          <li className={css.contact} key={contact.id}>
+          <li className={css.contact} id={nanoid()} key={nanoid()}>
             <span className={css.name}>{contact.name}:</span>
             <span className={css.number}>{contact.number}</span>
             <button
