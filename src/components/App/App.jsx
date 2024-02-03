@@ -1,51 +1,66 @@
-import { useState, useEffect } from 'react';
-import { nanoid } from 'nanoid';
+import { useEffect } from 'react';
 
 import { Phonebook } from '../Phonebook/Phonebook';
 import { Contacts } from '../Contacts/Contacts';
 import { Filter } from '../Filter/Filter';
 import css from './App.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 
 export const App = () => {
-  const [contacts, setContacts] = useState(
-    () =>
-      JSON.parse(window.localStorage.getItem('contacts-list')) ?? [
-        { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-        { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-        { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-        { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-      ]
-  );
+  // const [contacts, setContacts] = useState(
+  //   () =>
+  //     JSON.parse(window.localStorage.getItem('contacts-list')) ?? [
+  //       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  //       { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  //       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  //       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  //     ]
+  // );
 
-  const [filter, setFilter] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(store => store.contacts.contacts);
+  console.log('contacts: ', contacts);
+  const filter = useSelector(store => store.contacts.filter);
+  console.log('filter: ', filter);
+
+  // const [filter, setFilter] = useState('');
 
   useEffect(() => {
     window.localStorage.setItem('contacts-list', JSON.stringify(contacts));
   }, [contacts]);
 
-  const addContact = ({ name, number }) => {
-    const newContact = {
-      id: nanoid(),
-      name,
-      number,
+  const addContact = newContact => {
+    const isExist = contacts.some(
+      ({ name, number }) =>
+        name.toLowerCase().trim() === newContact.name.toLowerCase().trim() ||
+        number.trim() === newContact.number.trim()
+    );
+
+    if (isExist) {
+      return toast.error(`${newContact.name}: is already in contacts`);
+    }
+
+    const action = {
+      type: 'contacts/addContacts',
+      payload: newContact,
     };
-
-    contacts.filter(
-      contact =>
-        contact.name.toLowerCase().trim() ===
-          newContact.name.toLowerCase().trim() ||
-        contact.number.trim() === newContact.number.trim()
-    ).length
-      ? alert(`${newContact.name}: is already in contacts`)
-      : setContacts([newContact, ...contacts]);
+    dispatch(action);
   };
-
   const handleDelete = id => {
-    setContacts(contacts.filter(contact => contact.id !== id));
+    const action = {
+      type: 'contacts/deleteContacts',
+      payload: id,
+    };
+    dispatch(action);
   };
 
   const updateFilter = event => {
-    setFilter(event.currentTarget.value.toLowerCase());
+    const action = {
+      type: 'contacts/setFilter',
+      payload: event.currentTarget.value.toLowerCase(),
+    };
+    dispatch(action);
   };
 
   const filtredContacts = () => {
