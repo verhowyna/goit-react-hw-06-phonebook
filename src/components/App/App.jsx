@@ -1,8 +1,13 @@
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addContacts,
+  deleteContacts,
+  setFilter,
+} from '../../redux/contacts/contactsSlice';
 import { Phonebook } from '../Phonebook/Phonebook';
 import { Contacts } from '../Contacts/Contacts';
 import { Filter } from '../Filter/Filter';
 import css from './App.module.css';
-import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 
 export const App = () => {
@@ -21,25 +26,16 @@ export const App = () => {
       return toast.error(`${newContact.name}: is already in contacts`);
     }
 
-    const action = {
-      type: 'contacts/addContacts',
-      payload: newContact,
-    };
+    const action = addContacts(newContact);
     dispatch(action);
   };
   const handleDelete = contactId => {
-    const action = {
-      type: 'contacts/deleteContacts',
-      payload: contactId,
-    };
+    const action = deleteContacts(contactId);
     dispatch(action);
   };
 
   const updateFilter = event => {
-    const action = {
-      type: 'contacts/setFilter',
-      payload: event.target.value.toLowerCase(),
-    };
+    const action = setFilter(event.target.value.toLowerCase());
     dispatch(action);
   };
 
