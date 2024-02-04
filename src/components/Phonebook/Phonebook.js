@@ -2,6 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 import css from './Phonebook.module.css';
+import { nanoid } from '@reduxjs/toolkit';
 
 const schema = Yup.object().shape({
   name: Yup.string()
@@ -21,7 +22,7 @@ export const Phonebook = ({ onAddContact }) => {
       }}
       validationSchema={schema}
       onSubmit={(values, actions) => {
-        onAddContact(values);
+        onAddContact({ ...values, id: nanoid() });
         actions.resetForm();
       }}
     >

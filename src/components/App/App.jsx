@@ -38,7 +38,7 @@ export const App = () => {
   const updateFilter = event => {
     const action = {
       type: 'contacts/setFilter',
-      payload: event.currentTarget.value.toLowerCase(),
+      payload: event.target.value.toLowerCase(),
     };
     dispatch(action);
   };
